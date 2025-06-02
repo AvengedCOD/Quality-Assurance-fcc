@@ -62,3 +62,9 @@ form button {
 #messages li:nth-child(odd) { 
   background: #eee;
 }
+
+/* my code */
+
+body {
+  background-color: #777;
+}
