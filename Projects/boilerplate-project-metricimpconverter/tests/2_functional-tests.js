@@ -26,8 +26,7 @@ suite('Functional Tests', function() {
         .get('/api/convert?input=foo')
         .end(function(err, res) {
           assert.equal(res.status, 200);
-          assert.property(res.body, 'error');
-          assert.equal(res.body.error, 'Invalid unit'); 
+          assert.equal(res.body, 'invalid unit'); 
           done();
         });
     });
@@ -37,8 +36,7 @@ suite('Functional Tests', function() {
         .get('/api/convert?input=3/2/3kg')
         .end(function(err, res) {
           assert.equal(res.status, 200);
-          assert.property(res.body, 'error'); 
-          assert.equal(res.body.error, 'Invalid number'); 
+          assert.equal(res.body, 'invalid number'); 
           done();
         });
     });
@@ -48,8 +46,7 @@ suite('Functional Tests', function() {
         .get('/api/convert?input=3/2/3foo')
         .end(function(err, res) {
           assert.equal(res.status, 200);
-          assert.property(res.body, 'error'); 
-          assert.equal(res.body.error, 'Invalid input'); 
+          assert.equal(res.body, 'invalid number and unit'); 
           done();
         });
     });

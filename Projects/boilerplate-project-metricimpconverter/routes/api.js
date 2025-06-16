@@ -19,13 +19,13 @@ module.exports = function (app) {
     const initUnit = convertHandler.getUnit(input);
     
     if (initNum === undefined && initUnit === undefined) {
-      return res.json({ error: 'Invalid input' });
+      return res.json('invalid number and unit');
     }
     if (initNum === undefined && initUnit !== undefined) {
-      return res.json({ error: 'Invalid number' });
+      return res.json('invalid number');
     }
     if (initNum !== undefined && initUnit === undefined) {
-      return res.json({ error: 'Invalid unit' });
+      return res.json('invalid unit');
     }
     
     const returnNumUnfixed = convertHandler.convert(initNum, initUnit);
