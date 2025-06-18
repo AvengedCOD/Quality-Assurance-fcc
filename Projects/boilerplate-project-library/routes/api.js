@@ -7,41 +7,75 @@
 */
 
 'use strict';
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = function (app) {
+  let books = [];
 
   app.route('/api/books')
+    // Get list of books and put in array of objects
     .get(function (req, res){
-      //response will be array of book objects
-      //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
+      const formatBooks = books.map(book => ({
+        _id: book._id,
+        title: book.title,
+        commentcount: book.comments.length
+      }));
+      res.json(formatBooks)
     })
     
+    // Post new books to the database, check for title
     .post(function (req, res){
-      let title = req.body.title;
-      //response will contain new book object including atleast _id and title
+      const title = req.body.title;
+      if (!title) return res.send('missing required field title');
+
+      const newBook = {
+        _id: uuidv4(),
+        title,
+        comments: []
+      };
+
+      books.push(newBook);
+      res.json({ _id: newBook._id, title: newBook.title });
     })
     
+    // Delete all books from the database
     .delete(function(req, res){
-      //if successful response will be 'complete delete successful'
+      books = [];
+      res.send('complete delete successful');
     });
-
-
 
   app.route('/api/books/:id')
+    // Get book based on _id, check _id
     .get(function (req, res){
-      let bookid = req.params.id;
-      //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+      const bookid = req.params.id;
+      const book = books.find(b => b._id === bookid);
+      
+      if (!book) return res.send('no book exists');
+      res.json(book);
     })
     
+    // Comment on a book in the database, check for comment field
     .post(function(req, res){
-      let bookid = req.params.id;
-      let comment = req.body.comment;
-      //json res format same as .get
+      const bookid = req.params.id;
+      const comment = req.body.comment;
+
+      if (!comment) return res.send('missing required field comment');
+
+      const book = books.find(b => b._id === bookid);
+      if (!book) return res.send('no book exists');
+
+      book.comments.push(comment);
+      res.json(book);
     })
     
+    // Delete book based on _id, check if _id is valid
     .delete(function(req, res){
-      let bookid = req.params.id;
-      //if successful response will be 'delete successful'
+      const bookid = req.params.id;
+      const index = books.findIndex(b => b._id === bookid);
+
+      if (index === -1) return res.send('no book exists');
+
+      books.splice(index, 1);
+      res.send('delete successful');
     });
-  
 };
