@@ -12,7 +12,7 @@ suite('Functional Tests', () => {
 
   suite('POST /api/solve', () => {
 
-    test('1. Solve a puzzle with valid puzzle string', done => {
+    test('Solve a puzzle with valid puzzle string', done => {
       chai.request(server)
         .post('/api/solve')
         .send({ puzzle: validPuzzle })
@@ -24,7 +24,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('2. Solve a puzzle with missing puzzle string', done => {
+    test('Solve a puzzle with missing puzzle string', done => {
       chai.request(server)
         .post('/api/solve')
         .send({})
@@ -35,7 +35,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('3. Solve a puzzle with invalid characters', done => {
+    test('Solve a puzzle with invalid characters', done => {
       const puzzle = validPuzzle.replace('.', 'a');
       chai.request(server)
         .post('/api/solve')
@@ -47,7 +47,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('4. Solve a puzzle with incorrect length', done => {
+    test('Solve a puzzle with incorrect length', done => {
       const puzzle = validPuzzle.slice(0, 80);
       chai.request(server)
         .post('/api/solve')
@@ -59,7 +59,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('5. Solve a puzzle that cannot be solved', done => {
+    test('Solve a puzzle that cannot be solved', done => {
       const unsolvable = '1'.repeat(81);
       chai.request(server)
         .post('/api/solve')
@@ -74,7 +74,7 @@ suite('Functional Tests', () => {
 
   suite('POST /api/check', () => {
 
-    test('6. Check a puzzle placement with all fields', done => {
+    test('Check a puzzle placement with all fields', done => {
       chai.request(server)
         .post('/api/check')
         .send({ puzzle: validPuzzle, coordinate: 'A2', value: '3' })
@@ -85,19 +85,19 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('7. Check a puzzle placement with single placement conflict', done => {
+    test('Check a puzzle placement with single placement conflict', done => {
       chai.request(server)
         .post('/api/check')
         .send({ puzzle: validPuzzle, coordinate: 'A2', value: '1' }) 
         .end((err, res) => {
           assert.equal(res.status, 200);
           assert.isFalse(res.body.valid);
-          assert.include(res.body.conflict, 'row');
+          assert.isTrue(res.body.conflict.includes('row'));
           done();
         });
     });
 
-    test('8. Check a puzzle placement with multiple placement conflicts', done => {
+    test('Check a puzzle placement with multiple placement conflicts', done => {
       chai.request(server)
         .post('/api/check')
         .send({ puzzle: validPuzzle, coordinate: 'A2', value: '5' }) 
@@ -109,7 +109,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('9. Check a puzzle placement with all placement conflicts', done => {
+    test('Check a puzzle placement with all placement conflicts', done => {
       chai.request(server)
         .post('/api/check')
         .send({ puzzle: validPuzzle, coordinate: 'H1', value: '1' })
@@ -120,7 +120,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('10. Check a puzzle placement with missing required fields', done => {
+    test('Check a puzzle placement with missing required fields', done => {
       chai.request(server)
         .post('/api/check')
         .send({ puzzle: validPuzzle, value: '3' }) 
@@ -131,7 +131,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('11. Check a puzzle placement with invalid characters', done => {
+    test('Check a puzzle placement with invalid characters', done => {
       const invalidPuzzle = validPuzzle.replace('.', 'x');
       chai.request(server)
         .post('/api/check')
@@ -143,7 +143,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('12. Check a puzzle placement with incorrect length', done => {
+    test('Check a puzzle placement with incorrect length', done => {
       const shortPuzzle = validPuzzle.slice(0, 80);
       chai.request(server)
         .post('/api/check')
@@ -155,7 +155,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('13. Check a puzzle placement with invalid placement coordinate', done => {
+    test('Check a puzzle placement with invalid placement coordinate', done => {
       chai.request(server)
         .post('/api/check')
         .send({ puzzle: validPuzzle, coordinate: 'Z9', value: '3' })
@@ -166,7 +166,7 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('14. Check a puzzle placement with invalid placement value', done => {
+    test('Check a puzzle placement with invalid placement value', done => {
       chai.request(server)
         .post('/api/check')
         .send({ puzzle: validPuzzle, coordinate: 'A2', value: 'x' })
